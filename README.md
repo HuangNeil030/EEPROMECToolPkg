@@ -40,6 +40,7 @@ Index I/O 是一種透過 "Index" 與 "Data" 暫存器間接存取 EC 內部 RAM
 * Data Port: Base + `0x03` 。
 
 * **Nuvoton 晶片 (`0x0A00`)**：
+
 * High Byte Index: Base + `0x00` 。
 
 
@@ -49,8 +50,8 @@ Index I/O 是一種透過 "Index" 與 "Data" 暫存器間接存取 EC 內部 RAM
 * Data Port: Base + `0x02` 。
 
 * **通訊交握控制暫存器 (CMD_CNTL)**：
-* **Bit 0 (Processing)**: 標示 EC 正在處理命令或資料 。
 
+* **Bit 0 (Processing)**: 標示 EC 正在處理命令或資料 。
 
 * **Bit 1 (Start)**: 觸發 EC 開始執行命令的旗標 。
 
@@ -87,25 +88,16 @@ Index I/O 是一種透過 "Index" 與 "Data" 暫存器間接存取 EC 內部 RAM
 * **執行流程**：
 1. 檢查 IBF 清空 。
 
-
 2. 寫入指令到 Command Port 。
-
 
 3. 檢查 IBF 清空 。
 
-
 4. 寫入位址或 Bank 編號到 Data Port 。
-
 
 5. 如果是讀取：檢查 OBF 設置 ，然後從 Data Port 讀取資料 。
 
 
 6. 如果是寫入：寫入實際資料到 Data Port 。
-
-
-
-
-
 
 * **`IdxExec(UINT8 Cmd, UINT8 Addr, UINT8 Data)`**
 * **功能**：處理高度規範化的 Mailbox Handshake (交握) 協定。
