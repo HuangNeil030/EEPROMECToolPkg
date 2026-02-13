@@ -1,0 +1,29 @@
+## @file
+#  EEPROMECTool.inf
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = EEPROMECTool
+  FILE_GUID                      = 9b0c27d2-3456-7890-bcde-f01234567890
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UefiMain
+
+[Sources]
+  EEPROMECTool.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ShellPkg/ShellPkg.dec
+
+[LibraryClasses]
+
+  UefiLib
+  UefiApplicationEntryPoint
+  UefiBootServicesTableLib
+  BaseLib
+  BaseMemoryLib
+  PrintLib
+  IoLib
+  BaseMemoryLib

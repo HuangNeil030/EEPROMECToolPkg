@@ -1,0 +1,10 @@
+## @file
+#  EEPROMECToolPkg.dec
+##
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = EEPROMECToolPkg
+  PACKAGE_GUID                   = 7f8c05c0-1234-4567-89ab-cdef01234567
+  PACKAGE_VERSION                = 0.1
+
