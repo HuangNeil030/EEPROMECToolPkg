@@ -136,7 +136,7 @@ Index I/O 是一種透過 "Index" 與 "Data" 暫存器間接存取 EC 內部 RAM
 
 ---
 
-## 4. 終端使用者操作手冊 (User Interface Guide)
+## 4. 終端使用者操作手冊  (User Interface Guide)
 
 工具啟動後，將呈現一個互動式的 Hex Editor 介面。EEPROM 的定址方式為 Bank (0~7) 配合 Offset (00~FF) 。
 
