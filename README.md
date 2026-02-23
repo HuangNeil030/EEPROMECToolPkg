@@ -1,6 +1,48 @@
 # EEPROMECToolPkg
 # EEPROMECTool 開發筆記與使用說明 (README)
-
+EEPROM EC TOOL (EC EEPROM 讀寫工具)
+│
+├── UI / Console (使用者介面與終端機控制)
+│   ├── Color             // 設定終端機字體與背景顏色
+│   ├── PrH               // 格式化列印提示文字（綠色括號提示）
+│   └── Draw              // 渲染主畫面（標題列、16x16 Hex 網格、ASCII 區、快捷鍵說明）
+│
+├── Wait Helpers (硬體等待與同步機制)
+│   ├── PortWait          // 輪詢實體 I/O Port 狀態（IBF/OBF），具備 Timeout 保護
+│   └── IdxWaitCtl        // 透過 Index I/O 間接讀 EC RAM Control Register，等待旗標位元達標
+│
+├── Low-Level Access (底層 Index I/O 間接存取層)
+│   ├── IdxRead8          // 設定 Index High/Low 後，從 Data Port 讀取 EC RAM 1 Byte
+│   └── IdxWrite8         // 設定 Index High/Low 後，寫入 Data Port 1 Byte 到 EC RAM
+│
+├── Protocol Handlers (硬體協定執行層)
+│   ├── PortOp            // 執行 Port I/O 命令交握（60/64 或 62/66）
+│   │                     // 流程：Wait IBF -> Write Cmd -> Wait IBF -> Write Addr/Bank ->
+│   │                     //       Wait IBF -> (Write Data 或 Wait OBF + Read Data)
+│   └── IdxExec           // 執行 Index I/O Mailbox 交握（ENE / Nuvoton / ITE）
+│                         // 流程：Wait Idle -> Lock -> Fill Buffers -> Trigger Start ->
+│                         //       Wait Done -> Unlock
+│
+├── High-Level API (高階應用 API 層)
+│   ├── EcSetBank         // 設定 EEPROM Bank（依 mAccType 自動導向 PortOp 或 IdxExec）
+│   └── EcRW              // EEPROM 單一位址 Byte 讀/寫封裝（自動導向 Port / Index 後端）
+│
+├── Data & Input (資料管理與使用者輸入)
+│   ├── Refresh           // 切換 Bank 後，連續讀 256 Bytes 存入 mDump[]（畫面快取）
+│   └── InputHex          // 鍵盤輸入 Hex 值（過濾非法字元，轉成 UINT32，支援 1/2/4 Byte）
+│
+├── Global State / Runtime Context (全域狀態與執行上下文)
+│   ├── mBank             // 目前 EEPROM Bank（0~7）
+│   ├── mCursor           // 畫面游標位置（0~255）
+│   ├── mMode             // 顯示/寫入模式（1/2/4 Bytes）
+│   ├── mDump[256]        // 目前 Bank 的 256 Bytes 快取資料
+│   ├── mAccType          // 存取模式（0:PortIO / 1:ENE / 2:Nuvoton / 3:ITE）
+│   ├── gCmd / gData      // Port I/O 命令埠與資料埠（60/64 或 62/66）
+│   └── mProf[] / Profile // 各廠商 Index I/O Base、Buffer、Control Register 對應表
+│
+└── Main Entry (主程式入口與事件迴圈)
+    └── UefiMain          // 初始化狀態與畫面，進入事件迴圈處理按鍵：
+                          // 方向鍵、PgUp/PgDn、F1/F2、I、TAB、R、Enter、ESC
 ## 1. 專案與架構簡介
 
 這是一個專為 UEFI Shell 環境開發的互動式 EC (Embedded Controller) EEPROM 讀寫工具。本工具的設計目的在於提供一個統一的介面，以存取系統中由 EC 管理的 EEPROM 資料 。在現代筆記型電腦與嵌入式系統中，EC 負責管理多項關鍵資訊，例如系統序號 (Serial Number)、MAC 位址以及 UUID 等 。
